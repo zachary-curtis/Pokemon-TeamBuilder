@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:cache="http://www.springframework.org/schema/cache"
 	xmlns:repository="http://www.springframework.org/schema/data/repository"
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
@@ -20,18 +18,19 @@
 
 	<!-- Find Spring Beans -->
 	<context:component-scan base-package="com.shockops" />
-	<mvc:annotation-driven/>
+	<mvc:annotation-driven />
 	<tx:annotation-driven />
-	
+
 	<!-- Define DataSource -->
 	<bean id="mydataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
-		<!-- Stuff specific to DB  -->
- 		<property name="url" value="jdbc:oracle:thin:@theateam.cwbfuclnlnhv.us-west-2.rds.amazonaws.com:1521:ORCL"></property>
+		<!-- Stuff specific to DB -->
+		<property name="url"
+			value="jdbc:oracle:thin:@theateam.cwbfuclnlnhv.us-west-2.rds.amazonaws.com:1521:ORCL"></property>
 		<property name="username" value="ateam_db"></property>
 		<property name="password" value="p4ssw0rd"></property>
 	</bean>
-	
+
 	<!-- Because Spring Data doesn't natively support Hibernate (But it does 
 		support JPA) -->
 	<bean id="entityManagerFactory"
@@ -44,12 +43,12 @@
 				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
- 				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
 			</props>
 		</property>
 	</bean>
-	
-	
+
+
 	<!-- Because tx are cool -->
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
@@ -60,11 +59,25 @@
 	<bean id="hibernateJpaVendorAdapter"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"></bean>
 
-	
+
 	<!-- Find JPA Repositories -->
 	<jpa:repositories base-package="com.shockops.dao" />
-	
-	
+
+
+
+	<!-- Tell DispatcherServlet where are our Static Resources -->
+	<mvc:resources location="/resources/" mapping="/resources/**"></mvc:resources>
+	<!-- location is location actual, resources is url mapping, ** for wildcard -->
+	<!-- Configure the ViewResolver -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/pages/</value>
+		</property>
+		<property name="suffix">
+			<value>.html</value>
+		</property>
+	</bean>
 
 
 </beans>
